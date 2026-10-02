@@ -1,0 +1,5 @@
+N,PeakWorkingSetMB,MeasurementType
+1000,11.29,single_run
+10000,23.46,single_run
+100000,114.75,single_run
+1000000,892.23,single_run

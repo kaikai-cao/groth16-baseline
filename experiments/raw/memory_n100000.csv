@@ -1,0 +1,2 @@
+N,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes
+100000,1,459.261,1.507,0.883,514.049,0.850,128
