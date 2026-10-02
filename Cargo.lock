@@ -594,6 +594,7 @@ name = "groth16-baseline"
 version = "0.1.0"
 dependencies = [
  "ark-bn254",
+ "ark-ff",
  "ark-groth16",
  "ark-relations",
  "ark-serialize",
