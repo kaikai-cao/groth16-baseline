@@ -18,7 +18,7 @@ impl<F: Field> ConstraintSynthesizer<F> for SquarePlusOne<F> {
         cs.enforce_r1cs_constraint(
             || lc!() + x,
             || lc!() + x,
-            || lc!() + y - lc!() + ark_relations::gr1cs::Variable::One,
+            || lc!() + y - ark_relations::gr1cs::Variable::One,
         )?;
 
         Ok(())
@@ -45,5 +45,7 @@ mod tests {
         assert_eq!(cs.num_constraints(), 1);
         assert_eq!(cs.num_instance_variables(), 2);
         assert_eq!(cs.num_witness_variables(), 1);
+
+        assert!(cs.is_satisfied().unwrap());
     }
 }

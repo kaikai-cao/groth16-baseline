@@ -1,24 +1,24 @@
 mod circuit;
+mod groth16;
 
-use ark_bn254::Fr;
-use ark_relations::gr1cs::{ConstraintSynthesizer, ConstraintSystem};
-
-use circuit::SquarePlusOne;
+use groth16::{prove, setup, verify};
 
 fn main() {
-    let cs = ConstraintSystem::<Fr>::new_ref();
+    let mut rng = ark_std::test_rng();
 
-    let circuit = SquarePlusOne {
-        x: Some(Fr::from(2u64)),
-        y: Some(Fr::from(5u64)),
-    };
+    println!("=== Groth16 Correctness Test ===");
 
-    circuit
-        .generate_constraints(cs.clone())
-        .expect("failed to generate constraints");
+    let (pk, vk) = setup(&mut rng).expect("Groth16 setup failed");
 
-    println!("=== Groth16 Baseline: Circuit Structure ===");
-    println!("Constraints: {}", cs.num_constraints());
-    println!("Instance variables: {}", cs.num_instance_variables());
-    println!("Witness variables: {}", cs.num_witness_variables());
+    println!("Setup: OK");
+
+    let proof = prove(&pk, &mut rng).expect("Groth16 proving failed");
+
+    println!("Prove: OK");
+
+    let verified = verify(&vk, &proof).expect("Groth16 verification failed");
+
+    println!("Verify: {verified}");
+
+    assert!(verified, "Groth16 proof verification failed");
 }
