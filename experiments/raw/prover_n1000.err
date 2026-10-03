@@ -1,0 +1,428 @@
+    Finished `release` profile [optimized] target(s) in 0.12s
+     Running `target\release\groth16-baseline.exe bench 1000 2 5`
+N,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................281.100µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................2.288ms
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................2.358ms
+··End:     Inlining LCs ............................................................2.474ms
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................14.600µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................403.700µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................747.700µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.878ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.744ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.678ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................1.564ms
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................1.140ms
+····Start:   Calculate H
+····End:     Calculate H ...........................................................875.900µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................748.100µs
+··End:     Generate the R1CS proving key ...........................................4.983ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................410.100µs
+End:     Groth16::Generator ........................................................16.247ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................166.800µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................200ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................0ns
+····End:     Finalize GR1CS ........................................................12.200µs
+··End:     Inlining LCs ............................................................18.300µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................4.022ms
+··Start:   Compute C
+··End:     Compute C ...............................................................8.091ms
+··Start:   Compute A
+··End:     Compute A ...............................................................3.286ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................2.933ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.902ms
+··Start:   Finish C
+··End:     Finish C ................................................................5.200µs
+End:     Groth16::Prover ...........................................................24.673ms
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................144.400µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................400ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................13.000µs
+··End:     Inlining LCs ............................................................19.700µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................8.700µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................358.400µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................715.500µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.428ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.604ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.449ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................868.900µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................769.000µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................834.300µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................729.300µs
+··End:     Generate the R1CS proving key ...........................................3.917ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................360.400µs
+End:     Groth16::Generator ........................................................11.099ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................151.400µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................100ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................0ns
+····End:     Finalize GR1CS ........................................................12.300µs
+··End:     Inlining LCs ............................................................19.100µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.171ms
+··Start:   Compute C
+··End:     Compute C ...............................................................5.743ms
+··Start:   Compute A
+··End:     Compute A ...............................................................2.816ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................2.861ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.349ms
+··Start:   Finish C
+··End:     Finish C ................................................................1.400µs
+End:     Groth16::Prover ...........................................................20.298ms
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................143.200µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................200ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................14.100µs
+··End:     Inlining LCs ............................................................57.900µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................8.200µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................296.600µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................596.600µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.235ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.716ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.454ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................994.300µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................768.800µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................818.600µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................734.000µs
+··End:     Generate the R1CS proving key ...........................................4.053ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................370.800µs
+End:     Groth16::Generator ........................................................11.080ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................287.700µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................200ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................12.800µs
+··End:     Inlining LCs ............................................................19.400µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.428ms
+··Start:   Compute C
+··End:     Compute C ...............................................................5.938ms
+··Start:   Compute A
+··End:     Compute A ...............................................................3.066ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................2.710ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.348ms
+··Start:   Finish C
+··End:     Finish C ................................................................1.400µs
+End:     Groth16::Prover ...........................................................21.054ms
+1000,1,11.338,0.034,1.236,21.077,1.054,128
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................166.100µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................8.000µs
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................30.300µs
+··End:     Inlining LCs ............................................................38.000µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................9.500µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................213.300µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................511.600µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.443ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.687ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.321ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................855.900µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................724.200µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................793.200µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................708.900µs
+··End:     Generate the R1CS proving key ...........................................3.815ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................527.800µs
+End:     Groth16::Generator ........................................................10.971ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................250.800µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................400ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................15.400µs
+··End:     Inlining LCs ............................................................23.100µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.913ms
+··Start:   Compute C
+··End:     Compute C ...............................................................5.990ms
+··Start:   Compute A
+··End:     Compute A ...............................................................3.009ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................2.851ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.783ms
+··Start:   Finish C
+··End:     Finish C ................................................................4.100µs
+End:     Groth16::Prover ...........................................................22.100ms
+1000,2,11.253,0.050,1.335,22.139,1.458,128
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................146.000µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................700ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................13.700µs
+··End:     Inlining LCs ............................................................58.500µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................9.100µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................236.900µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................511.900µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.393ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.694ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.419ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................857.000µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................733.700µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................804.000µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................773.000µs
+··End:     Generate the R1CS proving key ...........................................3.902ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................446.600µs
+End:     Groth16::Generator ........................................................10.984ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................149.800µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................200ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................0ns
+····End:     Finalize GR1CS ........................................................13.000µs
+··End:     Inlining LCs ............................................................19.400µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.068ms
+··Start:   Compute C
+··End:     Compute C ...............................................................6.074ms
+··Start:   Compute A
+··End:     Compute A ...............................................................3.187ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................3.038ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.461ms
+··Start:   Finish C
+··End:     Finish C ................................................................1.300µs
+End:     Groth16::Prover ...........................................................21.222ms
+1000,3,11.209,0.017,0.894,21.244,1.016,128
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................149.800µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................300ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................12.700µs
+··End:     Inlining LCs ............................................................19.300µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................8.700µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................289.300µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................612.100µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.255ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.906ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.386ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................882.300µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................828.100µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................1.016ms
+····Start:   Calculate L
+····End:     Calculate L ...........................................................740.100µs
+··End:     Generate the R1CS proving key ...........................................4.227ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................362.800µs
+End:     Groth16::Generator ........................................................11.449ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................265.200µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................500ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................101.400µs
+··End:     Inlining LCs ............................................................110.400µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.039ms
+··Start:   Compute C
+··End:     Compute C ...............................................................6.183ms
+··Start:   Compute A
+··End:     Compute A ...............................................................2.966ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................3.031ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.476ms
+··Start:   Finish C
+··End:     Finish C ................................................................1.300µs
+End:     Groth16::Prover ...........................................................21.287ms
+1000,4,11.701,0.033,1.231,21.315,1.023,128
+Start:   Groth16::Generator
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................146.700µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................200ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................12.600µs
+··End:     Inlining LCs ............................................................19.000µs
+··Start:   Constructing evaluation domain
+··End:     Constructing evaluation domain ..........................................8.500µs
+··Start:   R1CS to QAP Instance Map with Evaluation
+····Start:   Evaluate Lagrange coefficients
+····End:     Evaluate Lagrange coefficients ........................................292.800µs
+··End:     R1CS to QAP Instance Map with Evaluation ................................659.900µs
+··Start:   Compute G2 table
+··End:     Compute G2 table ........................................................1.284ms
+··Start:   Calculate B G2 of size 1002
+··End:     Calculate B G2 of size 1002 .............................................2.574ms
+··Start:   Compute G1 window table
+··End:     Compute G1 window table .................................................1.306ms
+··Start:   Generate the R1CS proving key
+····Start:   Calculate A
+····End:     Calculate A ...........................................................844.600µs
+····Start:   Calculate B G1
+····End:     Calculate B G1 ........................................................745.200µs
+····Start:   Calculate H
+····End:     Calculate H ...........................................................779.200µs
+····Start:   Calculate L
+····End:     Calculate L ...........................................................717.600µs
+··End:     Generate the R1CS proving key ...........................................3.843ms
+··Start:   Generate the R1CS verification key
+··End:     Generate the R1CS verification key ......................................371.800µs
+End:     Groth16::Generator ........................................................10.635ms
+Start:   Groth16::Prover
+··Start:   Constraint synthesis
+··End:     Constraint synthesis ....................................................153.200µs
+··Start:   Inlining LCs
+····Start:   Finalize GR1CS
+······Start:   Inline/Outline LCs
+······End:     Inline/Outline LCs ..................................................300ns
+······Start:   Instance Outlining
+······End:     Instance Outlining ..................................................100ns
+····End:     Finalize GR1CS ........................................................12.500µs
+··End:     Inlining LCs ............................................................18.700µs
+··Start:   R1CS to QAP witness map
+··End:     R1CS to QAP witness map .................................................3.139ms
+··Start:   Compute C
+··End:     Compute C ...............................................................5.682ms
+··Start:   Compute A
+··End:     Compute A ...............................................................3.078ms
+··Start:   Compute B in G1
+··End:     Compute B in G1 .........................................................2.898ms
+··Start:   Compute B in G2
+··End:     Compute B in G2 .........................................................5.541ms
+··Start:   Finish C
+··End:     Finish C ................................................................1.400µs
+End:     Groth16::Prover ...........................................................20.697ms
+1000,5,10.873,0.013,0.920,20.715,1.049,128
