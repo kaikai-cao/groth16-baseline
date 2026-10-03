@@ -3,8 +3,9 @@
 ## 1. Project Information
 
 - Project: groth16-baseline
-- Purpose: Reproducible Groth16 zkSNARK baseline
-- Experiment Stage: Day 8 - Baseline Setup
+- Purpose: Reproducible Groth16 zkSNARK performance baseline
+- Experiment Stage: Day 8 - Baseline Benchmark
+- Baseline Date: 2026-10-02
 
 ## 2. Operating System
 
@@ -31,45 +32,61 @@
 ## 5. Compiler Environment
 
 - C++ Toolchain: MSVC
-- MSVC Linker: Available
+- MSVC Linker: Working
 - Visual Studio / Build Tools: Visual Studio 2026 Insiders
 
 ## 6. Arkworks Environment
 
-- ark-groth16:
-- ark-relations:
-- ark-ff:
-- ark-ec:
-- ark-snark:
+- ark-groth16: 0.6.0
+- ark-relations: 0.6.0
+- ark-ff: 0.6.0
+- ark-ec: 0.6.0
+- ark-snark: 0.6.0
+- Curve: BN254
 
 ## 7. Build Configuration
 
-- Build Profile: dev / release
-- Optimization Level:
-- Parallel Threads:
+- Build Profile: release
+- Optimization: Rust release profile
+- Parallel Threads: 20
+- Parallel Runtime: Rayon
 
 ## 8. Benchmark Configuration
 
-- Warm-up Runs:
-- Measurement Runs:
-- Statistical Method:
-- Timing Method:
+- Circuit Sizes: 1,000 / 10,000 / 100,000 / 1,000,000 constraints
+- Warm-up Runs: 2
+- Measurement Runs: 5
+- Statistical Method: Median
+- Timing Method: std::time::Instant
+- Proof Size: Compressed serialization length
+- Peak Memory: Peak Working Set measured by an external PowerShell monitor
+- RNG: ark_std::test_rng()
 
-## 9. Reproducibility Notes
+## 9. Notes
 
-This experiment is conducted on Windows 11 Home China Insider Preview,
-version 25H2, OS build 26220.9568.
+This benchmark measures the current Groth16 implementation under a fixed
+hardware and software environment.
 
-The Rust toolchain is pinned to Rust 1.98.1 with the
-x86_64-pc-windows-msvc target.
+Setup time measures Groth16 parameter generation only.
 
-Hardware, operating system, Rust toolchain, compiler configuration,
-cryptographic library versions, build profile, and parallelism settings
-should remain fixed during baseline and comparative experiments whenever
-possible.
+Witness generation is measured separately and is not included in Prove Time.
 
-Any environment change that may affect performance should be recorded
-and committed to version control.
+Prepare VK is measured separately from the final proof verification.
 
-Because this system uses a Windows Insider Preview build, the exact OS
-build number is recorded explicitly for reproducibility.
+Prove Time measures Groth16 proof generation only.
+
+Verify Time measures the final Groth16 proof verification operation.
+
+Proof size is measured using compressed proof serialization.
+
+Peak memory is a single-run Peak Working Set measurement and is therefore
+not a five-run median.
+
+The 1,000,000-constraint smoke-test result is retained as auxiliary data and
+is not used in the formal five-run timing baseline.
+
+Because the operating system is a Windows Insider Preview build, the exact
+OS build number is recorded for reproducibility.
+
+Any environment change that may affect performance should be recorded and
+committed to version control.
