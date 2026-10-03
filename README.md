@@ -4,8 +4,7 @@ A reproducible experimental baseline for the Groth16 zkSNARK proving system.
 
 ## Research Objective
 
-This repository establishes a controlled Groth16 baseline for subsequent
-profiling and optimization research.
+This repository establishes a controlled Groth16 baseline for subsequent profiling and optimization research.
 
 The current experiments focus on:
 
@@ -17,6 +16,8 @@ The current experiments focus on:
 - Proof Size
 - Peak Working Set
 - Constraint Scaling
+
+The baseline is intended to provide a reproducible reference point for later investigations into prover optimization, computational cost reduction, and proof-system performance.
 
 ## Experimental Environment
 
@@ -38,20 +39,28 @@ The current experiments focus on:
 
 ## Benchmark Protocol
 
-For each circuit size:
+For each circuit size, the benchmark uses:
 
 - 2 warm-up runs
 - 5 formal measurement runs
 - Median used for timing summary
 
-Witness generation, Setup, VK preprocessing, Prove, and Verify are measured
-separately.
+The benchmark reports the following metrics separately:
+
+- Witness generation time
+- Setup time
+- Verifying-key preparation time
+- Prove time
+- Verify time
+- Proof size
 
 Proof size is measured after compressed serialization.
 
-Peak Working Set is measured separately during one independent run.
+Peak Working Set is measured separately in an independent run and is reported as a memory metric rather than being included in the timing median.
 
 ## Baseline Results
+
+The current end-to-end Groth16 baseline results are:
 
 | Constraints | Setup (ms) | Witness (ms) | Prepare VK (ms) | Prove (ms) | Verify (ms) | Proof (B) | Peak Memory (MB) |
 |---:|---:|---:|---:|---:|---:|---:|---:|
@@ -60,9 +69,9 @@ Peak Working Set is measured separately during one independent run.
 | 100,000 | 442.122 | 1.533 | 0.845 | 481.373 | 0.857 | 128 | 114.75 |
 | 1,000,000 | 6236.741 | 34.445 | 1.168 | 6394.521 | 1.335 | 128 | 892.23 |
 
-## Prover Scaling
+The baseline shows that proof size remains constant at 128 bytes across the tested circuit sizes, while proving and setup costs increase substantially as the number of constraints grows.
 
-![Groth16 Prover Scaling](results/figures/prove_time_vs_constraints.png)
+![Groth16 Prover Scaling](experiments/results/figures/prove_time_vs_constraints.png)
 
 ## Repository Structure
 
@@ -72,11 +81,15 @@ groth16-baseline/
 │   ├── environment.md
 │   └── methodology.md
 ├── experiments/
-│   └── raw/
-├── results/
-│   ├── figures/
-│   └── tables/
+│   ├── configs/
+│   ├── raw/
+│   └── results/
+│       ├── figures/
+│       └── tables/
 ├── scripts/
+│   ├── plot_baseline.py
+│   ├── plot_prover_profile.py
+│   └── requirements.txt
 ├── src/
 │   ├── benchmark.rs
 │   ├── circuit.rs
@@ -86,3 +99,142 @@ groth16-baseline/
 ├── Cargo.lock
 ├── README.md
 └── rust-toolchain.toml
+```
+
+## Groth16 Prover Profiling
+
+This repository also records coarse-grained profiling results for the Groth16 prover implementation based on `ark-groth16`. The profiling uses the same repeated-squaring circuit as the baseline benchmark and evaluates four constraint scales: 1,000, 10,000, 100,000, and 1,000,000 constraints. Each scale is executed with 2 warm-up runs and 5 formal measurement runs in the release configuration.
+
+The profiling results were collected in a separate experimental run from the original end-to-end baseline. Therefore, the profiling timing values are not expected to exactly match the original baseline timing measurements.
+
+The prover trace exposes the major implementation stages:
+
+```text
+Constraint synthesis
+        ↓
+Inlining LCs
+        ↓
+R1CS to QAP witness map
+        ↓
+Compute C
+        ↓
+Compute A
+        ↓
+Compute B in G1
+        ↓
+Compute B in G2
+        ↓
+Finish C
+```
+
+These measurements are coarse-grained implementation stages rather than instruction-level measurements. In particular, `Compute A`, `Compute B`, and `Compute C` may contain multiple group operations and MSM-related computations and should not be interpreted as pure MSM measurements.
+
+The current profiling summary is:
+
+| Constraints (N) | Prove (ms) | QAP (ms) | Compute C (ms) | Compute A (ms) | Compute B-G1 (ms) | Compute B-G2 (ms) | Verify (ms) | Proof Size (B) |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1,000 | 21.244 | 3.406 | 5.607 | 3.004 | 2.800 | 5.399 | 1.049 | 128 |
+| 10,000 | 82.577 | 12.984 | 23.754 | 9.735 | 9.664 | 22.507 | 0.985 | 128 |
+| 100,000 | 459.689 | 64.702 | 117.785 | 52.506 | 53.245 | 136.934 | 0.902 | 128 |
+| 1,000,000 | 3,781.503 | 514.375 | 856.246 | 452.986 | 452.375 | 1,143.000 | 1.069 | 128 |
+
+The profiling results show that prover cost increases substantially with the constraint scale, while the Groth16 proof remains constant at 128 bytes in these experiments. At larger circuit sizes, `Compute B in G2`, `Compute C`, and `R1CS to QAP witness map` account for major observed components of prover execution time.
+
+These results are used to guide subsequent fine-grained profiling. They do not by themselves establish a definitive algorithmic bottleneck. The next stage is to further decompose the expensive prover stages and quantify the contribution of MSM, polynomial processing, and other group operations.
+
+The processed profiling data are available in:
+
+- [`prover_summary.csv`](experiments/results/tables/prover_summary.csv)
+- [`prover_stage_share.csv`](experiments/results/tables/prover_stage_share.csv)
+- [`prover_scaling.csv`](experiments/results/tables/prover_scaling.csv)
+- [`prover_summary.md`](experiments/results/tables/prover_summary.md)
+
+The generated figures are available in:
+
+- [`prover_time_vs_constraints.png`](experiments/results/figures/prover_time_vs_constraints.png)
+- [`prover_stage_breakdown.png`](experiments/results/figures/prover_stage_breakdown.png)
+- [`prover_stage_share.png`](experiments/results/figures/prover_stage_share.png)
+
+The corresponding raw profiling logs and benchmark outputs are stored under:
+
+```text
+experiments/raw/
+```
+
+The `.err` files contain the complete execution output, including the prover trace and benchmark output. The corresponding `.csv` files contain the structured formal benchmark results.
+
+**Reproducing the Experiments**
+
+Build and run the end-to-end benchmark with:
+
+```powershell
+cargo run --release -- bench 1000 2 5
+cargo run --release -- bench 10000 2 5
+cargo run --release -- bench 100000 2 5
+cargo run --release -- bench 1000000 2 5
+```
+
+For prover profiling, the raw execution output can be recorded with:
+
+```powershell
+cmd /c "cargo run --release -- bench 1000 2 5 > experiments\raw\prover_n1000.err 2>&1"
+cmd /c "cargo run --release -- bench 10000 2 5 > experiments\raw\prover_n10000.err 2>&1"
+cmd /c "cargo run --release -- bench 100000 2 5 > experiments\raw\prover_n100000.err 2>&1"
+cmd /c "cargo run --release -- bench 1000000 2 5 > experiments\raw\prover_n1000000.err 2>&1"
+```
+
+The corresponding structured benchmark rows contain the five formal measurement runs.
+
+After collecting the raw profiling results, regenerate the profiling tables and figures with:
+
+```powershell
+python scripts/plot_prover_profile.py
+```
+
+Because the benchmark uses 2 warm-up runs and 5 formal runs, the raw prover trace contains 7 prover traces for each circuit size. The profiling parser uses only the final 5 formal traces when generating the reported profiling statistics.
+
+**Current Research Direction**
+
+The baseline and coarse-grained profiling establish the first experimental reference point for investigating Groth16 prover performance.
+
+The current evidence indicates that prover cost grows substantially with circuit size and is distributed across multiple implementation stages. In particular, the profiling results identify `Compute B in G2`, `Compute C`, and `R1CS to QAP witness map` as important stages for further investigation at larger constraint scales.
+
+The immediate research direction is therefore:
+
+```text
+Baseline
+    ↓
+Coarse-grained profiling
+    ↓
+Fine-grained profiling
+    ↓
+MSM / polynomial-operation analysis
+    ↓
+Optimization target identification
+    ↓
+Experimental evaluation
+```
+
+The purpose of the next stage is to determine which concrete operations account for the observed costs before selecting an optimization target. Any optimization claim will be evaluated against the baseline using the same experimental methodology and reporting metrics.
+
+**Reproducibility**
+
+The repository is organized so that the experimental results can be traced back to the implementation, benchmark configuration, raw execution output, and result-generation scripts.
+
+The intended workflow is:
+
+```text
+Source Code
+    ↓
+Benchmark Configuration
+    ↓
+Raw Experimental Output
+    ↓
+Processed Tables
+    ↓
+Generated Figures
+    ↓
+Performance Analysis
+```
+
+This structure is intended to support reproducible experiments and provide a stable baseline for future Groth16 performance and optimization studies.
