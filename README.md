@@ -626,7 +626,8 @@ groth16-baseline/
 ├── docs/
 │   ├── environment.md
 │   ├── methodology.md
-│   └── day11_bottleneck_analysis.md
+│   |── bottleneck_analysis.md
+|   └── msm_analysis.md
 │
 ├── experiments/
 │   ├── configs/
