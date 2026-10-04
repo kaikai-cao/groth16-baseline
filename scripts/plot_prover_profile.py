@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parents[1]
 
 RAW_DIR = ROOT / "experiments" / "raw"
-TABLE_DIR = ROOT / "experiments" / "results" / "tables"
-FIGURE_DIR = ROOT / "experiments" / "results" / "figures"
+TABLE_DIR = ROOT / "results" / "tables"
+FIGURE_DIR = ROOT / "results" / "figures"
 
 TABLE_DIR.mkdir(parents=True, exist_ok=True)
 FIGURE_DIR.mkdir(parents=True, exist_ok=True)

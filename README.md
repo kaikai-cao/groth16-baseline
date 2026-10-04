@@ -81,21 +81,26 @@ groth16-baseline/
 │   ├── environment.md
 │   └── methodology.md
 ├── experiments/
-│   ├── raw/
-│   │   ├── auxiliary/
-│   │   ├── baseline_n*.csv
-│   │   ├── memory_n*.err
-│   │   ├── peak_memory.csv
-│   │   ├── prover_n*.csv
-│   │   └── prover_n*.err
-│   └── results/
-│       ├── figures/
-│       └── tables/
+│   ├── configs/
+│   └── raw/
+│       ├── auxiliary/
+│       ├── baseline_n*.csv
+│       ├── memory_n*.err
+│       ├── peak_memory.csv
+│       ├── prover_n*.csv
+│       └── prover_n*.err
 ├── results/
 │   ├── figures/
-│   │   └── prove_time_vs_constraints.png
+│   │   ├── prove_time_vs_constraints.png
+│   │   ├── prover_time_vs_constraints.png
+│   │   ├── prover_stage_breakdown.png
+│   │   └── prover_stage_share.png
 │   └── tables/
-│       └── baseline_summary.csv
+│       ├── baseline_summary.csv
+│       ├── prover_summary.csv
+│       ├── prover_summary.md
+│       ├── prover_stage_share.csv
+│       └── prover_scaling.csv
 ├── scripts/
 │   ├── plot_baseline.py
 │   ├── plot_prover_profile.py
@@ -154,16 +159,16 @@ These results are used to guide subsequent fine-grained profiling. They do not b
 
 The processed profiling data are available in:
 
-- [`prover_summary.csv`](experiments/results/tables/prover_summary.csv)
-- [`prover_stage_share.csv`](experiments/results/tables/prover_stage_share.csv)
-- [`prover_scaling.csv`](experiments/results/tables/prover_scaling.csv)
-- [`prover_summary.md`](experiments/results/tables/prover_summary.md)
+- [`prover_summary.csv`](results/tables/prover_summary.csv)
+- [`prover_stage_share.csv`](results/tables/prover_stage_share.csv)
+- [`prover_scaling.csv`](results/tables/prover_scaling.csv)
+- [`prover_summary.md`](results/tables/prover_summary.md)
 
 The generated figures are available in:
 
-- [`prover_time_vs_constraints.png`](experiments/results/figures/prover_time_vs_constraints.png)
-- [`prover_stage_breakdown.png`](experiments/results/figures/prover_stage_breakdown.png)
-- [`prover_stage_share.png`](experiments/results/figures/prover_stage_share.png)
+- [`prover_time_vs_constraints.png`](results/figures/prover_time_vs_constraints.png)
+- [`prover_stage_breakdown.png`](results/figures/prover_stage_breakdown.png)
+- [`prover_stage_share.png`](results/figures/prover_stage_share.png)
 
 The corresponding raw profiling logs and benchmark outputs are stored under:
 
