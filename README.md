@@ -71,7 +71,7 @@ The current end-to-end Groth16 baseline results are:
 
 The baseline shows that proof size remains constant at 128 bytes across the tested circuit sizes, while proving and setup costs increase substantially as the number of constraints grows.
 
-![Groth16 Prover Scaling](experiments/results/figures/prove_time_vs_constraints.png)
+![Groth16 Prover Scaling](results/figures/prove_time_vs_constraints.png)
 
 ## Repository Structure
 
@@ -81,11 +81,21 @@ groth16-baseline/
 │   ├── environment.md
 │   └── methodology.md
 ├── experiments/
-│   ├── configs/
 │   ├── raw/
+│   │   ├── auxiliary/
+│   │   ├── baseline_n*.csv
+│   │   ├── memory_n*.err
+│   │   ├── peak_memory.csv
+│   │   ├── prover_n*.csv
+│   │   └── prover_n*.err
 │   └── results/
 │       ├── figures/
 │       └── tables/
+├── results/
+│   ├── figures/
+│   │   └── prove_time_vs_constraints.png
+│   └── tables/
+│       └── baseline_summary.csv
 ├── scripts/
 │   ├── plot_baseline.py
 │   ├── plot_prover_profile.py
@@ -133,12 +143,12 @@ The current profiling summary is:
 
 | Constraints (N) | Prove (ms) | QAP (ms) | Compute C (ms) | Compute A (ms) | Compute B-G1 (ms) | Compute B-G2 (ms) | Verify (ms) | Proof Size (B) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1,000 | 21.244 | 3.406 | 5.607 | 3.004 | 2.800 | 5.399 | 1.049 | 128 |
-| 10,000 | 82.577 | 12.984 | 23.754 | 9.735 | 9.664 | 22.507 | 0.985 | 128 |
-| 100,000 | 459.689 | 64.702 | 117.785 | 52.506 | 53.245 | 136.934 | 0.902 | 128 |
-| 1,000,000 | 3,781.503 | 514.375 | 856.246 | 452.986 | 452.375 | 1,143.000 | 1.069 | 128 |
+| 1,000 | 21.244 | 3.139 | 5.990 | 3.066 | 2.898 | 5.476 | 1.049 | 128 |
+| 10,000 | 77.647 | 11.895 | 22.599 | 9.071 | 9.154 | 22.408 | 1.410 | 128 |
+| 100,000 | 450.286 | 76.869 | 120.248 | 52.133 | 51.586 | 138.594 | 1.046 | 128 |
+| 1,000,000 | 4,024.170 | 681.383 | 978.854 | 478.513 | 547.475 | 1,284.000 | 1.018 | 128 |
 
-The profiling results show that prover cost increases substantially with the constraint scale, while the Groth16 proof remains constant at 128 bytes in these experiments. At larger circuit sizes, `Compute B in G2`, `Compute C`, and `R1CS to QAP witness map` account for major observed components of prover execution time.
+The profiling results show that prover cost increases substantially with the constraint scale, while the Groth16 proof remains constant at 128 bytes in these experiments. At larger circuit sizes, `Compute B in G2`, `Compute C`, and `R1CS to QAP witness map` are major observed components of prover execution time.
 
 These results are used to guide subsequent fine-grained profiling. They do not by themselves establish a definitive algorithmic bottleneck. The next stage is to further decompose the expensive prover stages and quantify the contribution of MSM, polynomial processing, and other group operations.
 
