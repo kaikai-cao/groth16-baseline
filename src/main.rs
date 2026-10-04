@@ -1,4 +1,8 @@
 mod benchmark;
+
+use std::fs::OpenOptions;
+use std::io::Write;
+
 mod circuit;
 mod groth16;
 
@@ -45,9 +49,17 @@ fn run_correctness() {
     assert!(verified);
 }
 
+
 fn print_benchmark(result: &benchmark::BenchmarkResult, run: usize) {
+    let msm_total_ms =
+        result.msm_c_h_ms
+        + result.msm_c_l_ms
+        + result.msm_a_ms
+        + result.msm_b_g1_ms
+        + result.msm_b_g2_ms;
+
     println!(
-        "{},{},{:.3},{:.3},{:.3},{:.3},{:.3},{}",
+        "{},{},{:.3},{:.3},{:.3},{:.3},{:.3},{},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3}",
         result.constraints,
         run,
         result.setup_ms,
@@ -55,21 +67,92 @@ fn print_benchmark(result: &benchmark::BenchmarkResult, run: usize) {
         result.prepare_vk_ms,
         result.prove_ms,
         result.verify_ms,
-        result.proof_bytes
+        result.proof_bytes,
+        result.msm_c_h_ms,
+        result.msm_c_l_ms,
+        result.msm_a_ms,
+        result.msm_b_g1_ms,
+        result.msm_b_g2_ms,
+        msm_total_ms,
     );
 }
 
-fn run_benchmark(num_constraints: usize, warmups: usize, runs: usize) {
-    println!("N,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes");
 
+fn run_benchmark(num_constraints: usize, warmups: usize, runs: usize) {
+    let path = "experiments/raw/msm_trace/msm_breakdown.csv";
+
+    std::fs::create_dir_all("experiments/raw/msm_trace")
+        .expect("failed to create MSM trace directory");
+
+    let file_exists_and_nonempty =
+        std::fs::metadata(path)
+            .map(|m| m.len() > 0)
+            .unwrap_or(false);
+
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .expect("failed to open MSM breakdown CSV");
+
+    if !file_exists_and_nonempty {
+        writeln!(
+            file,
+            "N,threads,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes,\
+msm_c_h_ms,msm_c_l_ms,msm_a_ms,msm_b_g1_ms,msm_b_g2_ms,msm_total_ms"
+        )
+        .expect("failed to write CSV header");
+    }
+
+    // Detect the Rayon thread configuration used by the experiment.
+    let threads = std::env::var("RAYON_NUM_THREADS")
+        .unwrap_or_else(|_| "default".to_string());
+
+    println!(
+        "N,threads,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes,\
+msm_c_h_ms,msm_c_l_ms,msm_a_ms,msm_b_g1_ms,msm_b_g2_ms,msm_total_ms"
+    );
+
+    // Warm-up runs are intentionally NOT written to the formal dataset.
     for _ in 0..warmups {
         run_once(num_constraints).expect("warm-up benchmark failed");
     }
 
+    // Formal runs.
     for run in 1..=runs {
-        let result = run_once(num_constraints).expect("benchmark failed");
+        let result = run_once(num_constraints)
+            .expect("benchmark failed");
 
-        print_benchmark(&result, run);
+        let msm_total_ms =
+            result.msm_c_h_ms
+            + result.msm_c_l_ms
+            + result.msm_a_ms
+            + result.msm_b_g1_ms
+            + result.msm_b_g2_ms;
+
+        let line = format!(
+            "{},{},{},{:.3},{:.3},{:.3},{:.3},{:.3},{},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3}",
+            result.constraints,
+            threads,
+            run,
+            result.setup_ms,
+            result.witness_ms,
+            result.prepare_vk_ms,
+            result.prove_ms,
+            result.verify_ms,
+            result.proof_bytes,
+            result.msm_c_h_ms,
+            result.msm_c_l_ms,
+            result.msm_a_ms,
+            result.msm_b_g1_ms,
+            result.msm_b_g2_ms,
+            msm_total_ms,
+        );
+
+        println!("{}", line);
+
+        writeln!(file, "{}", line)
+            .expect("failed to write MSM benchmark result");
     }
 }
 
