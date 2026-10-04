@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 #[path = "../circuit.rs"]
 mod circuit;
 

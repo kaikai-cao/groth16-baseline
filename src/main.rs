@@ -50,32 +50,32 @@ fn run_correctness() {
 }
 
 
-fn print_benchmark(result: &benchmark::BenchmarkResult, run: usize) {
-    let msm_total_ms =
-        result.msm_c_h_ms
-        + result.msm_c_l_ms
-        + result.msm_a_ms
-        + result.msm_b_g1_ms
-        + result.msm_b_g2_ms;
+// fn print_benchmark(result: &benchmark::BenchmarkResult, run: usize) {
+//     let msm_total_ms =
+//         result.msm_c_h_ms
+//         + result.msm_c_l_ms
+//         + result.msm_a_ms
+//         + result.msm_b_g1_ms
+//         + result.msm_b_g2_ms;
 
-    println!(
-        "{},{},{:.3},{:.3},{:.3},{:.3},{:.3},{},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3}",
-        result.constraints,
-        run,
-        result.setup_ms,
-        result.witness_ms,
-        result.prepare_vk_ms,
-        result.prove_ms,
-        result.verify_ms,
-        result.proof_bytes,
-        result.msm_c_h_ms,
-        result.msm_c_l_ms,
-        result.msm_a_ms,
-        result.msm_b_g1_ms,
-        result.msm_b_g2_ms,
-        msm_total_ms,
-    );
-}
+//     println!(
+//         "{},{},{:.3},{:.3},{:.3},{:.3},{:.3},{},{:.3},{:.3},{:.3},{:.3},{:.3},{:.3}",
+//         result.constraints,
+//         run,
+//         result.setup_ms,
+//         result.witness_ms,
+//         result.prepare_vk_ms,
+//         result.prove_ms,
+//         result.verify_ms,
+//         result.proof_bytes,
+//         result.msm_c_h_ms,
+//         result.msm_c_l_ms,
+//         result.msm_a_ms,
+//         result.msm_b_g1_ms,
+//         result.msm_b_g2_ms,
+//         msm_total_ms,
+//     );
+// }
 
 
 fn run_benchmark(num_constraints: usize, warmups: usize, runs: usize) {

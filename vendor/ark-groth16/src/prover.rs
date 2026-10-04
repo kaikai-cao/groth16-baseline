@@ -27,10 +27,19 @@ type D<F> = GeneralEvaluationDomain<F>;
 /// Timing information for the five MSM operations inside Groth16 proving.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct MsmTimings {
+    /// Time spent in the C-H MSM, in milliseconds.
     pub c_h_ms: f64,
+
+    /// Time spent in the C-L MSM, in milliseconds.
     pub c_l_ms: f64,
+
+    /// Time spent in the A MSM, in milliseconds.
     pub a_ms: f64,
+
+    /// Time spent in the B-G1 MSM, in milliseconds.
     pub b_g1_ms: f64,
+
+    /// Time spent in the B-G2 MSM, in milliseconds.
     pub b_g2_ms: f64,
 }
 
