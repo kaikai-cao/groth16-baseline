@@ -1,0 +1,5 @@
+bucket_count,group_add_mixed_g2_over_g1,prefix_g2_over_g1
+256,3.292,3.969
+2048,3.295,3.589
+8192,3.267,3.645
+32768,3.025,2.929

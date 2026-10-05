@@ -1,0 +1,275 @@
+    Finished `release` profile [optimized] target(s) in 0.11s
+     Running `target\release\groth16-baseline.exe bench 100000 2 5`
+N,threads,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,verify_ms,proof_bytes,msm_c_h_ms,msm_c_l_ms,msm_a_ms,msm_b_g1_ms,msm_b_g2_ms,msm_total_ms
+Start:   Groth16::Generator
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................14.527ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................307.400碌s
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................100ns
+路路路路End:     Finalize GR1CS ........................................................322.500碌s
+路路End:     Inlining LCs ............................................................331.100碌s
+路路Start:   Constructing evaluation domain
+路路End:     Constructing evaluation domain ..........................................17.800碌s
+路路Start:   R1CS to QAP Instance Map with Evaluation
+路路路路Start:   Evaluate Lagrange coefficients
+路路路路End:     Evaluate Lagrange coefficients ........................................11.579ms
+路路End:     R1CS to QAP Instance Map with Evaluation ................................35.976ms
+路路Start:   Compute G2 table
+路路End:     Compute G2 table ........................................................56.282ms
+路路Start:   Calculate B G2 of size 100002
+路路End:     Calculate B G2 of size 100002 ...........................................1.544s
+路路Start:   Compute G1 window table
+路路End:     Compute G1 window table .................................................55.238ms
+路路Start:   Generate the R1CS proving key
+路路路路Start:   Calculate A
+路路路路End:     Calculate A ...........................................................558.513ms
+路路路路Start:   Calculate B G1
+路路路路End:     Calculate B G1 ........................................................548.352ms
+路路路路Start:   Calculate H
+路路路路End:     Calculate H ...........................................................761.947ms
+路路路路Start:   Calculate L
+路路路路End:     Calculate L ...........................................................546.760ms
+路路End:     Generate the R1CS proving key ...........................................2.416s
+路路Start:   Generate the R1CS verification key
+路路End:     Generate the R1CS verification key ......................................1.028ms
+End:     Groth16::Generator ........................................................4.131s
+Start:   Groth16::Prover
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................15.781ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................600ns
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................0ns
+路路路路End:     Finalize GR1CS ........................................................8.500碌s
+路路End:     Inlining LCs ............................................................12.800碌s
+路路Start:   R1CS to QAP witness map
+路路End:     R1CS to QAP witness map .................................................241.537ms
+路路Start:   Compute C
+路路路路Start:   MSM C-H
+[MSM-TRACE] size=131071, threads=1, num_chunks=1, chunk_size=131071
+[WNAF-TRACE] size=131071, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=131071, window=13, digits_ms=24.467
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=429.030, prefix_work_ms=32.758, windows_wall_ms=461.814
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, windows_ms=461.881
+[WNAF-RECOMBINE] size=131071, window=13, recombine_ms=0.041
+路路路路End:     MSM C-H ...............................................................492.914ms
+路路路路Start:   MSM C-L
+[MSM-TRACE] size=99994, threads=1, num_chunks=1, chunk_size=99994
+[WNAF-TRACE] size=99994, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99994, window=13, digits_ms=13.403
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=321.477, prefix_work_ms=32.645, windows_wall_ms=354.144
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, windows_ms=354.198
+[WNAF-RECOMBINE] size=99994, window=13, recombine_ms=0.039
+路路路路End:     MSM C-L ...............................................................371.440ms
+路路End:     Compute C ...............................................................865.974ms
+路路Start:   Compute A
+路路路路Start:   MSM A
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=12.424
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=325.921, prefix_work_ms=32.434, windows_wall_ms=358.374
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=358.415
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.040
+路路路路End:     MSM A .................................................................374.759ms
+路路End:     Compute A ...............................................................374.884ms
+路路Start:   Compute B in G1
+路路路路Start:   MSM B-G1
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=13.898
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=322.675, prefix_work_ms=32.805, windows_wall_ms=355.502
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=355.575
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.040
+路路路路End:     MSM B-G1 ..............................................................373.191ms
+路路End:     Compute B in G1 .........................................................373.271ms
+路路Start:   Compute B in G2
+路路路路Start:   MSM B-G2
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=12.371
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=1034.142, prefix_work_ms=111.184, windows_wall_ms=1145.352
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=1145.395
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.114
+路路路路End:     MSM B-G2 ..............................................................1.163s
+路路End:     Compute B in G2 .........................................................1.164s
+路路Start:   Finish C
+路路End:     Finish C ................................................................1.600碌s
+End:     Groth16::Prover ...........................................................3.036s
+Start:   Groth16::Generator
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................14.461ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................600ns
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................100ns
+路路路路End:     Finalize GR1CS ........................................................8.400碌s
+路路End:     Inlining LCs ............................................................12.600碌s
+路路Start:   Constructing evaluation domain
+路路End:     Constructing evaluation domain ..........................................9.000碌s
+路路Start:   R1CS to QAP Instance Map with Evaluation
+路路路路Start:   Evaluate Lagrange coefficients
+路路路路End:     Evaluate Lagrange coefficients ........................................12.219ms
+路路End:     R1CS to QAP Instance Map with Evaluation ................................43.569ms
+路路Start:   Compute G2 table
+路路End:     Compute G2 table ........................................................56.320ms
+路路Start:   Calculate B G2 of size 100002
+路路End:     Calculate B G2 of size 100002 ...........................................1.537s
+路路Start:   Compute G1 window table
+路路End:     Compute G1 window table .................................................54.325ms
+路路Start:   Generate the R1CS proving key
+路路路路Start:   Calculate A
+路路路路End:     Calculate A ...........................................................543.544ms
+路路路路Start:   Calculate B G1
+路路路路End:     Calculate B G1 ........................................................607.997ms
+路路路路Start:   Calculate H
+路路路路End:     Calculate H ...........................................................840.267ms
+路路路路Start:   Calculate L
+路路路路End:     Calculate L ...........................................................570.855ms
+路路End:     Generate the R1CS proving key ...........................................2.563s
+路路Start:   Generate the R1CS verification key
+路路End:     Generate the R1CS verification key ......................................1.289ms
+End:     Groth16::Generator ........................................................4.278s
+Start:   Groth16::Prover
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................16.154ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................700ns
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................100ns
+路路路路End:     Finalize GR1CS ........................................................9.000碌s
+路路End:     Inlining LCs ............................................................13.400碌s
+路路Start:   R1CS to QAP witness map
+路路End:     R1CS to QAP witness map .................................................235.561ms
+路路Start:   Compute C
+路路路路Start:   MSM C-H
+[MSM-TRACE] size=131071, threads=1, num_chunks=1, chunk_size=131071
+[WNAF-TRACE] size=131071, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=131071, window=13, digits_ms=19.203
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=429.534, prefix_work_ms=33.008, windows_wall_ms=462.562
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, windows_ms=462.606
+[WNAF-RECOMBINE] size=131071, window=13, recombine_ms=0.039
+路路路路End:     MSM C-H ...............................................................487.466ms
+路路路路Start:   MSM C-L
+[MSM-TRACE] size=99994, threads=1, num_chunks=1, chunk_size=99994
+[WNAF-TRACE] size=99994, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99994, window=13, digits_ms=12.627
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=329.857, prefix_work_ms=32.843, windows_wall_ms=362.722
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, windows_ms=362.767
+[WNAF-RECOMBINE] size=99994, window=13, recombine_ms=0.105
+路路路路End:     MSM C-L ...............................................................381.041ms
+路路End:     Compute C ...............................................................870.002ms
+路路Start:   Compute A
+路路路路Start:   MSM A
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=20.181
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=333.385, prefix_work_ms=33.465, windows_wall_ms=366.879
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=366.927
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.040
+路路路路End:     MSM A .................................................................392.353ms
+路路End:     Compute A ...............................................................392.493ms
+路路Start:   Compute B in G1
+路路路路Start:   MSM B-G1
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=15.012
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=342.615, prefix_work_ms=34.816, windows_wall_ms=377.460
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=377.513
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.039
+路路路路End:     MSM B-G1 ..............................................................397.595ms
+路路End:     Compute B in G1 .........................................................397.670ms
+路路Start:   Compute B in G2
+路路路路Start:   MSM B-G2
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=13.824
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=1091.337, prefix_work_ms=114.916, windows_wall_ms=1206.281
+[WNAF-WINDOWS] size=99995, window=13, digits_count=20, bucket_count=8192, windows_ms=1206.326
+[WNAF-RECOMBINE] size=99995, window=13, recombine_ms=0.137
+路路路路End:     MSM B-G2 ..............................................................1.226s
+路路End:     Compute B in G2 .........................................................1.226s
+路路Start:   Finish C
+路路End:     Finish C ................................................................1.200碌s
+End:     Groth16::Prover ...........................................................3.139s
+Start:   Groth16::Generator
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................15.404ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................1.100碌s
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................0ns
+路路路路End:     Finalize GR1CS ........................................................10.900碌s
+路路End:     Inlining LCs ............................................................15.400碌s
+路路Start:   Constructing evaluation domain
+路路End:     Constructing evaluation domain ..........................................10.000碌s
+路路Start:   R1CS to QAP Instance Map with Evaluation
+路路路路Start:   Evaluate Lagrange coefficients
+路路路路End:     Evaluate Lagrange coefficients ........................................11.796ms
+路路End:     R1CS to QAP Instance Map with Evaluation ................................43.493ms
+路路Start:   Compute G2 table
+路路End:     Compute G2 table ........................................................61.042ms
+路路Start:   Calculate B G2 of size 100002
+路路End:     Calculate B G2 of size 100002 ...........................................1.584s
+路路Start:   Compute G1 window table
+路路End:     Compute G1 window table .................................................57.429ms
+路路Start:   Generate the R1CS proving key
+路路路路Start:   Calculate A
+路路路路End:     Calculate A ...........................................................572.038ms
+路路路路Start:   Calculate B G1
+路路路路End:     Calculate B G1 ........................................................627.124ms
+路路路路Start:   Calculate H
+路路路路End:     Calculate H ...........................................................836.757ms
+路路路路Start:   Calculate L
+路路路路End:     Calculate L ...........................................................590.141ms
+路路End:     Generate the R1CS proving key ...........................................2.626s
+路路Start:   Generate the R1CS verification key
+路路End:     Generate the R1CS verification key ......................................861.600碌s
+End:     Groth16::Generator ........................................................4.397s
+Start:   Groth16::Prover
+路路Start:   Constraint synthesis
+路路End:     Constraint synthesis ....................................................16.157ms
+路路Start:   Inlining LCs
+路路路路Start:   Finalize GR1CS
+路路路路路路Start:   Inline/Outline LCs
+路路路路路路End:     Inline/Outline LCs ..................................................800ns
+路路路路路路Start:   Instance Outlining
+路路路路路路End:     Instance Outlining ..................................................100ns
+路路路路End:     Finalize GR1CS ........................................................8.700碌s
+路路End:     Inlining LCs ............................................................13.900碌s
+路路Start:   R1CS to QAP witness map
+路路End:     R1CS to QAP witness map .................................................232.919ms
+路路Start:   Compute C
+路路路路Start:   MSM C-H
+[MSM-TRACE] size=131071, threads=1, num_chunks=1, chunk_size=131071
+[WNAF-TRACE] size=131071, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=131071, window=13, digits_ms=15.041
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=439.715, prefix_work_ms=33.827, windows_wall_ms=473.568
+[WNAF-WINDOWS] size=131071, window=13, digits_count=20, bucket_count=8192, windows_ms=473.612
+[WNAF-RECOMBINE] size=131071, window=13, recombine_ms=0.039
+路路路路End:     MSM C-H ...............................................................494.738ms
+路路路路Start:   MSM C-L
+[MSM-TRACE] size=99994, threads=1, num_chunks=1, chunk_size=99994
+[WNAF-TRACE] size=99994, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99994, window=13, digits_ms=13.308
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, bucket_work_ms=325.241, prefix_work_ms=33.065, windows_wall_ms=358.324
+[WNAF-WINDOWS] size=99994, window=13, digits_count=20, bucket_count=8192, windows_ms=358.366
+[WNAF-RECOMBINE] size=99994, window=13, recombine_ms=0.039
+路路路路End:     MSM C-L ...............................................................374.947ms
+路路End:     Compute C ...............................................................871.316ms
+路路Start:   Compute A
+路路路路Start:   MSM A
+[MSM-TRACE] size=99995, threads=1, num_chunks=1, chunk_size=99995
+[WNAF-TRACE] size=99995, window=13, natural_window=13, digits_count=20, bucket_count=8192, threads=1
+[WNAF-DIGITS] size=99995, window=13, digits_ms=12.084
