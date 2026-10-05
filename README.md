@@ -13,10 +13,15 @@ The current research objective is not to optimize Groth16 blindly, but to establ
 The main questions are:
 
 1. Which stages dominate Groth16 prover execution time?
+
 2. How much of the prover cost is caused by MSM and by each individual MSM instance?
+
 3. Why is G2 MSM more expensive than G1 MSM under the tested environment?
+
 4. Which internal operation of the current WNAF-based MSM implementation dominates B-G2 cost?
+
 5. Where does parallel speedup stop scaling efficiently?
+
 6. Which measured hotspot is sufficiently well localized to justify a future optimization study?
 
 The long-term goal is to investigate techniques that can reduce prover computation, memory pressure, or other practical costs while preserving correctness and proof-system semantics.
@@ -115,7 +120,27 @@ Median used for timing summaries
 
 Warm-up runs are excluded from formal timing statistics.
 
-The microbenchmark binaries currently execute 2 warm-ups and 7 formal runs. Their analysis scripts use the **latest 5 formal runs** for the reported summaries so that the reporting convention remains consistent across the processed results.
+The standalone MSM microbenchmark uses:
+
+```text
+2 warm-up runs
+7 formal runs
+```
+
+For each complete benchmark session, the latest 5 formal runs are used for the reported median, minimum, and maximum values.
+
+Each standalone MSM measurement is recorded with an explicit session identifier together with:
+
+```text
+session_id
+threads
+group
+N
+run
+time_ms
+```
+
+This allows complete benchmark sessions to be distinguished from incomplete or exploratory measurements.
 
 Proof size is measured after compressed serialization.
 
@@ -260,7 +285,7 @@ The current formal summary is:
 | 1,000 | 20 | 22.286 | 15.772 | 70.8% | 32.2% |
 | 10,000 | 1 | 394.757 | 364.754 | 92.4% | 40.7% |
 | 10,000 | 20 | 85.842 | 68.736 | 80.1% | 36.6% |
-| 100,000 | 1 | 3031.292 | 2778.900 | 91.7% | 41.9% |
+| 100,000 | 1 | 3038.846 | 2784.852 | 91.6% | 42.0% |
 | 100,000 | 20 | 488.295 | 403.520 | 82.6% | 38.9% |
 | 1,000,000 | 1 | 24113.191 | 21715.134 | 90.1% | 43.4% |
 | 1,000,000 | 20 | 3952.734 | 3254.899 | 82.3% | 40.1% |
@@ -283,15 +308,15 @@ The measured 1-thread to 20-thread speedups are:
 |---:|---:|---:|---:|
 | 1,000 | 2.371× | 3.101× | 4.204× |
 | 10,000 | 4.599× | 5.307× | 5.905× |
-| 100,000 | 6.208× | 6.887× | 7.424× |
+| 100,000 | 6.223× | 6.901× | 7.447× |
 | 1,000,000 | 6.100× | 6.672× | 7.231× |
 
 The 100,000-constraint configuration currently gives:
 
 ```text
-Prover speedup ≈ 6.21×
-MSM speedup    ≈ 6.89×
-B-G2 speedup   ≈ 7.42×
+Prover speedup ≈ 6.22×
+MSM speedup    ≈ 6.90×
+B-G2 speedup   ≈ 7.45×
 ```
 
 These are well below ideal 20× linear scaling. The measurements therefore show clear non-ideal parallel behavior, but the total speedup alone does not identify its exact cause.
@@ -327,32 +352,75 @@ Thread configurations:
 20 threads
 ```
 
-Representative results from the processed standalone benchmark are:
+Each configuration uses 2 warm-up runs and 7 formal measurement runs. The reported summary uses the latest 5 formal runs from the selected complete session.
+
+The current processed results are:
 
 | Group | Threads | N | Median (ms) |
 |---|---:|---:|---:|
-| G1 | 1 | 1,024 | 6.860 |
-| G1 | 1 | 4,096 | 22.543 |
-| G1 | 1 | 16,384 | 73.341 |
-| G1 | 1 | 65,536 | 250.783 |
-| G1 | 20 | 1,024 | 3.155 |
-| G1 | 20 | 4,096 | 6.781 |
-| G1 | 20 | 16,384 | 14.149 |
-| G1 | 20 | 65,536 | 42.381 |
-| G2 | 1 | 1,024 | 21.804 |
-| G2 | 1 | 4,096 | 69.294 |
-| G2 | 1 | 16,384 | 223.970 |
-| G2 | 1 | 65,536 | 769.406 |
-| G2 | 20 | 1,024 | 6.556 |
-| G2 | 20 | 4,096 | 14.356 |
-| G2 | 20 | 16,384 | 35.015 |
-| G2 | 20 | 65,536 | 110.790 |
+| G1 | 1 | 1,024 | 7.108 |
+| G1 | 1 | 4,096 | 22.051 |
+| G1 | 1 | 16,384 | 76.592 |
+| G1 | 1 | 65,536 | 262.892 |
+| G1 | 20 | 1,024 | 2.811 |
+| G1 | 20 | 4,096 | 6.066 |
+| G1 | 20 | 16,384 | 14.106 |
+| G1 | 20 | 65,536 | 42.584 |
+| G2 | 1 | 1,024 | 22.398 |
+| G2 | 1 | 4,096 | 72.043 |
+| G2 | 1 | 16,384 | 234.917 |
+| G2 | 1 | 65,536 | 800.915 |
+| G2 | 20 | 1,024 | 5.542 |
+| G2 | 20 | 4,096 | 14.296 |
+| G2 | 20 | 16,384 | 36.776 |
+| G2 | 20 | 65,536 | 109.493 |
 
-The benchmark confirms that G2 MSM is substantially more expensive than G1 MSM under the tested environment.
+G2 MSM is consistently more expensive than G1 MSM under the tested configurations.
+
+The corresponding 1-thread to 20-thread speedups are:
+
+| N | G1 Speedup | G2 Speedup |
+|---:|---:|---:|
+| 1,024 | 2.53× | 4.04× |
+| 4,096 | 3.64× | 5.04× |
+| 16,384 | 5.43× | 6.39× |
+| 65,536 | 6.17× | 7.31× |
+
+The results show that parallel execution becomes increasingly effective as the MSM workload becomes larger. However, the measured speedups remain well below the ideal 20× scaling corresponding to 20 threads.
+
+At 20 threads, the measured G2/G1 execution-time ratio is:
+
+```text
+N = 1,024    → 1.97×
+N = 4,096    → 2.36×
+N = 16,384   → 2.61×
+N = 65,536   → 2.57×
+```
+
+The G2/G1 gap remains substantial under parallel execution, although the ratio does not increase monotonically across all tested sizes.
+
+At 1 thread, the corresponding G2/G1 ratios are:
+
+```text
+N = 1,024    → 3.15×
+N = 4,096    → 3.27×
+N = 16,384   → 3.07×
+N = 65,536   → 3.05×
+```
+
+This shows that the higher cost of G2 MSM is not limited to parallel execution.
 
 ![Standalone MSM](results/figures/msm_microbench.png)
 
+![Standalone MSM Parallel Speedup](results/figures/msm_speedup.png)
+
 The processed table is [`results/tables/msm.csv`](results/tables/msm.csv).
+
+The standalone MSM benchmark is summarized using:
+
+```powershell
+python scripts/summarize_msm.py
+```
 
 ---
 
@@ -791,7 +859,7 @@ experiments/raw/
         ↓
 Original Measurements
         ↓
-scripts/*_analysis.py
+scripts/*.py
         ↓
 results/tables/
         ↓
@@ -806,6 +874,23 @@ The intended rules are:
 - `results/tables/` contains processed and summarized data;
 - `results/figures/` contains generated figures;
 - `docs/` contains methodology and interpretation notes.
+
+For the standalone MSM benchmark specifically:
+
+```text
+experiments/raw/microbench/msm_g1.csv
+experiments/raw/microbench/msm_g2.csv
+        ↓
+scripts/summarize_msm.py
+        ↓
+results/tables/msm.csv
+        ↓
+scripts/plot_msm.py
+scripts/plot_msm_speedup.py
+        ↓
+results/figures/msm_microbench.png
+results/figures/msm_speedup.png
+```
 
 Raw measurements should not be silently replaced by processed results.
 
@@ -881,14 +966,59 @@ experiments/raw/microbench/msm_g1.csv
 experiments/raw/microbench/msm_g2.csv
 ```
 
-Group-operation and prefix measurements are stored in:
+The standalone benchmark can be run with:
+
+```powershell
+$env:RAYON_NUM_THREADS=1
+
+cargo run --release --bin microbench -- g1 1024
+cargo run --release --bin microbench -- g1 4096
+cargo run --release --bin microbench -- g1 16384
+cargo run --release --bin microbench -- g1 65536
+
+cargo run --release --bin microbench -- g2 1024
+cargo run --release --bin microbench -- g2 4096
+cargo run --release --bin microbench -- g2 16384
+cargo run --release --bin microbench -- g2 65536
+```
+
+For the 20-thread configuration:
+
+```powershell
+$env:RAYON_NUM_THREADS=20
+
+cargo run --release --bin microbench -- g1 1024
+cargo run --release --bin microbench -- g1 4096
+cargo run --release --bin microbench -- g1 16384
+cargo run --release --bin microbench -- g1 65536
+
+cargo run --release --bin microbench -- g2 1024
+cargo run --release --bin microbench -- g2 4096
+cargo run --release --bin microbench -- g2 16384
+cargo run --release --bin microbench -- g2 65536
+```
+
+The standalone MSM summary is generated with:
+
+```powershell
+python scripts/summarize_msm.py
+```
+
+The standalone MSM figures are generated with:
+
+```powershell
+python scripts/plot_msm.py
+python scripts/plot_msm_speedup.py
+```
+
+Group-operation and WNAF-prefix measurements are stored in:
 
 ```text
 experiments/raw/microbench/group_add.csv
 experiments/raw/microbench/prefix.csv
 ```
 
-The corresponding processing script is:
+Their processed results are generated with:
 
 ```powershell
 python scripts/analyze_microbench.py
@@ -910,7 +1040,7 @@ The reported timings describe the current implementation on the current hardware
 
 ## Local bottlenecks must be connected back to the full prover
 
-A primitive-level optimization is meaningful only when its local gain is related to its share of total prover time and then verified at the end-to-end level.
+A primitive-level improvement is meaningful only when its local gain is related to its share of total prover time and then verified at the end-to-end level.
 
 ## Hardware and runtime effects matter
 
@@ -984,7 +1114,9 @@ Trade-off Analysis
 A future optimization should answer three questions simultaneously:
 
 1. **What changed?** — algorithm, data layout, arithmetic strategy, or parallel execution.
+
 2. **What became cheaper?** — the exact local operation and measured cost reduction.
+
 3. **What happened to the whole prover?** — end-to-end speed, memory, proof size, and any regression elsewhere.
 
 ---
@@ -994,11 +1126,17 @@ A future optimization should answer three questions simultaneously:
 The current experimental baseline supports the following conclusions:
 
 1. **MSM is the dominant low-level computational component of the tested Groth16 prover.**
+
 2. **B-G2 is consistently the largest individual MSM instance and contributes roughly 40% of total measured MSM time at larger scales.**
+
 3. **G2 group operations are substantially more expensive than G1 operations under the tested environment, with bucket-update ratios around 3×.**
+
 4. **The internal WNAF trace localizes most B-G2 time to bucket accumulation rather than prefix reduction.**
+
 5. **MSM parallelism scales better than some other prover work, but overall scaling remains far below ideal linear speedup.**
+
 6. **FFT / IFFT shows clear workload-size-dependent parallel behavior but is not the current primary hotspot.**
+
 7. **No optimization has yet been applied; the present result is a reproducible baseline plus a localized research candidate.**
 
 The repository is therefore ready to serve as a reference point for the next phase of Groth16 optimization research.
