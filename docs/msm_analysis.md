@@ -68,22 +68,22 @@ The current measurements are:
 
 | Group | Threads |      N | Median (ms) |
 | ----- | ------: | -----: | ----------: |
-| G1    |       1 |  1,024 |       6.860 |
-| G1    |       1 |  4,096 |      22.543 |
-| G1    |       1 | 16,384 |      73.341 |
-| G1    |       1 | 65,536 |     250.783 |
-| G1    |      20 |  1,024 |       3.155 |
-| G1    |      20 |  4,096 |       6.781 |
-| G1    |      20 | 16,384 |      14.149 |
-| G1    |      20 | 65,536 |      42.381 |
-| G2    |       1 |  1,024 |      21.804 |
-| G2    |       1 |  4,096 |      69.294 |
-| G2    |       1 | 16,384 |     223.970 |
-| G2    |       1 | 65,536 |     769.406 |
-| G2    |      20 |  1,024 |       6.556 |
-| G2    |      20 |  4,096 |      14.356 |
-| G2    |      20 | 16,384 |      35.015 |
-| G2    |      20 | 65,536 |     110.790 |
+| G1    |       1 |  1,024 |       7.108 |
+| G1    |       1 |  4,096 |      22.051 |
+| G1    |       1 | 16,384 |      76.592 |
+| G1    |       1 | 65,536 |     262.892 |
+| G1    |      20 |  1,024 |       2.811 |
+| G1    |      20 |  4,096 |       6.066 |
+| G1    |      20 | 16,384 |      14.106 |
+| G1    |      20 | 65,536 |      42.584 |
+| G2    |       1 |  1,024 |      22.398 |
+| G2    |       1 |  4,096 |      72.043 |
+| G2    |       1 | 16,384 |     234.917 |
+| G2    |       1 | 65,536 |     800.915 |
+| G2    |      20 |  1,024 |       5.542 |
+| G2    |      20 |  4,096 |      14.296 |
+| G2    |      20 | 16,384 |      36.776 |
+| G2    |      20 | 65,536 |     109.493 |
 
 G2 MSM is consistently more expensive than G1 MSM under the tested
 configurations.
@@ -91,16 +91,15 @@ configurations.
 At 20 threads, the measured G2/G1 ratio is approximately:
 
 ```text
-N = 1,024    → 2.08×
-N = 4,096    → 2.12×
-N = 16,384   → 2.47×
-N = 65,536   → 2.61×
+N = 1,024    → 1.97×
+N = 4,096    → 2.36×
+N = 16,384   → 2.61×
+N = 65,536   → 2.57×
 ```
-
-Thus, the G2 cost difference becomes more pronounced as the MSM workload
-grows.
-
----
+The ratio increases substantially from the smallest workload and remains around
+2.6× at the two largest tested sizes. This indicates that the higher cost of G2
+MSM remains significant under parallel execution, although the ratio does not
+increase monotonically across all tested sizes.
 
 ## 4. Parallel MSM Behavior
 
@@ -108,16 +107,22 @@ The measured 1-thread to 20-thread speedups are:
 
 |      N | G1 Speedup | G2 Speedup |
 | -----: | ---------: | ---------: |
-|  1,024 |      2.17× |      3.33× |
-|  4,096 |      3.32× |      4.83× |
-| 16,384 |      5.18× |      6.40× |
-| 65,536 |      5.92× |      6.95× |
+|  1,024 |      2.53× |      4.04× |
+|  4,096 |      3.64× |      5.04× |
+| 16,384 |      5.43× |      6.39× |
+| 65,536 |      6.17× |      7.31× |
 
 The results show that parallel execution becomes increasingly effective as the
 MSM workload becomes larger.
 
+Both G1 and G2 exhibit stronger speedup at larger input sizes, indicating that
+parallel execution overhead is relatively more significant for small MSM
+workloads.
+
 However, the measured speedups remain far below the ideal 20× scaling
-corresponding to 20 threads.
+corresponding to 20 threads. The results therefore demonstrate substantial
+parallel benefit, but also clear non-linear scaling under the tested
+implementation and hardware.
 
 This indicates that parallel execution is affected by factors beyond the
 amount of arithmetic work, potentially including:
