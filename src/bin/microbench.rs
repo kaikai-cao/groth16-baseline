@@ -1,7 +1,7 @@
 use std::{
-    fs::{OpenOptions, create_dir_all},
+    fs::{File, OpenOptions, create_dir_all},
     hint::black_box,
-    io::Write,
+    io::{BufRead, BufReader, Write},
     time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
@@ -20,7 +20,7 @@ fn session_id() -> u128 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("system clock is before UNIX epoch")
-        .as_millis()
+        .as_nanos()
 }
 
 /// Record one MSM measurement.
@@ -35,21 +35,51 @@ fn record_msm_result(
     run: usize,
     time_ms: f64,
 ) -> std::io::Result<()> {
+    const HEADER: &str = "session_id,threads,group,N,run,time_ms";
+
     create_dir_all("experiments/raw/microbench")?;
 
     let filename = format!("experiments/raw/microbench/msm_{group}.csv");
 
-    let file_exists_and_nonempty = std::fs::metadata(&filename)
+    let path = std::path::Path::new(&filename);
+
+    // ---------------------------------
+    // Check existing CSV
+    // ---------------------------------
+
+    let file_exists_and_nonempty = std::fs::metadata(path)
         .map(|metadata| metadata.len() > 0)
         .unwrap_or(false);
 
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(&filename)?;
+    if file_exists_and_nonempty {
+        let file = File::open(path)?;
+        let mut reader = BufReader::new(file);
 
+        let mut header = String::new();
+        reader.read_line(&mut header)?;
+
+        let header = header.trim_end_matches(['\r', '\n']);
+
+        if header != HEADER {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!(
+                    "invalid MSM CSV header in {}: expected '{}', found '{}'",
+                    filename, HEADER, header
+                ),
+            ));
+        }
+    }
+
+    // ---------------------------------
+    // Open CSV for append
+    // ---------------------------------
+
+    let mut file = OpenOptions::new().create(true).append(true).open(path)?;
+
+    // Write header only for a new or empty file.
     if !file_exists_and_nonempty {
-        writeln!(file, "session_id,threads,group,N,run,time_ms")?;
+        writeln!(file, "{HEADER}")?;
     }
 
     let threads = std::env::var("RAYON_NUM_THREADS").unwrap_or_else(|_| "default".to_string());

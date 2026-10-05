@@ -191,7 +191,23 @@ msm_a_ms,msm_b_g1_ms,msm_b_g2_ms,msm_total_ms"
     }
 }
 
+fn ensure_clean_benchmark_environment() {
+    let forbidden = ["MSM_TRACE", "MSM_FORCE_WINDOW"];
+
+    for name in forbidden {
+        if std::env::var_os(name).is_some() {
+            panic!(
+                "Benchmark environment is not clean: {} is set. \
+                 Unset it before running formal benchmarks.",
+                name
+            );
+        }
+    }
+}
+
 fn main() {
+    ensure_clean_benchmark_environment();
+
     let args: Vec<String> = std::env::args().collect();
 
     match args.get(1).map(String::as_str) {

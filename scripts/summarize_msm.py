@@ -8,12 +8,17 @@ RAW_DIR = ROOT / "experiments" / "raw" / "microbench"
 RESULT_DIR = ROOT / "results" / "tables"
 RESULT_FILE = RESULT_DIR / "msm.csv"
 
-EXPECTED_RUNS = 5
+# One complete benchmark session contains 7 formal runs.
+EXPECTED_SESSION_RUNS = 7
+
+# The reported statistic uses the latest 5 formal runs
+# from the selected complete session.
+REPORTED_RUNS = 5
 
 
 def load_csv(path: Path):
     if not path.exists():
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(f"Raw data not found: {path}")
 
     with path.open(
         "r",
@@ -37,60 +42,113 @@ def process_group(rows, group_name):
     Convert raw MSM measurements into one summary row per
     (group, threads, N).
 
-    Raw MSM microbenchmark format:
+    Expected raw format:
 
-        timestamp_ms,threads,group,N,time_ms
+        session_id,threads,group,N,run,time_ms
 
-    Each row is one measurement, so there is no run/session field.
-
-    Current processing rule:
-    - exclude exploratory 'default' thread measurements;
-    - group by explicit thread count and N;
-    - sort by timestamp;
-    - use the latest five measurements;
-    - report median/min/max.
+    Processing rule:
+    1. Exclude exploratory 'default' thread measurements.
+    2. Group measurements by (threads, N).
+    3. For each configuration, identify complete sessions
+       containing exactly the formal run sequence 1..7.
+    4. Select the newest complete session.
+    5. Use the latest 5 formal runs from that session.
+    6. Report median/min/max.
     """
 
+    required_columns = {
+        "session_id",
+        "threads",
+        "group",
+        "N",
+        "run",
+        "time_ms",
+    }
+
+    if not rows:
+        raise RuntimeError(f"{group_name}: no rows found")
+
+    missing = required_columns - set(rows[0].keys())
+
+    if missing:
+        raise ValueError(f"{group_name}: missing columns: " f"{sorted(missing)}")
+
+    # Exclude exploratory measurements using the environment-default
+    # Rayon thread count.
     formal_rows = [row for row in rows if row["threads"].strip().lower() != "default"]
 
+    if not formal_rows:
+        raise RuntimeError(f"{group_name}: no formal thread measurements found")
+
+    # Group by explicit thread count and MSM input size.
     configurations = {}
 
     for row in formal_rows:
         threads = int(row["threads"].strip())
-
         n = int(row["N"])
+        session = int(row["session_id"])
+        run = int(row["run"])
+        time_ms = float(row["time_ms"])
 
-        key = (
-            threads,
-            n,
-        )
+        key = (threads, n)
 
         configurations.setdefault(
             key,
             [],
-        ).append(row)
+        ).append(
+            {
+                "session_id": session,
+                "run": run,
+                "time_ms": time_ms,
+            }
+        )
 
     results = []
 
     for (threads, n), config_rows in sorted(configurations.items()):
-        config_rows = sorted(
-            config_rows,
-            key=lambda row: int(row["timestamp_ms"]),
-        )
+        # Group measurements by session_id.
+        sessions = {}
 
-        if len(config_rows) < EXPECTED_RUNS:
-            raise RuntimeError(
-                f"{group_name}, threads={threads}, N={n}: "
-                f"only {len(config_rows)} measurements found; "
-                f"expected at least {EXPECTED_RUNS}"
+        for row in config_rows:
+            session = row["session_id"]
+
+            sessions.setdefault(
+                session,
+                [],
+            ).append(row)
+
+        complete_sessions = []
+
+        for session, session_rows in sessions.items():
+            session_rows = sorted(
+                session_rows,
+                key=lambda row: row["run"],
             )
 
-        # Use the newest five measurements.
-        latest_rows = config_rows[-EXPECTED_RUNS:]
+            run_sequence = [row["run"] for row in session_rows]
 
-        times = [float(row["time_ms"]) for row in latest_rows]
+            expected_sequence = list(range(1, EXPECTED_SESSION_RUNS + 1))
 
-        times_sorted = sorted(times)
+            if run_sequence == expected_sequence:
+                complete_sessions.append((session, session_rows))
+
+        if not complete_sessions:
+            raise RuntimeError(
+                f"{group_name}, threads={threads}, N={n}: "
+                f"no complete session with runs "
+                f"1..{EXPECTED_SESSION_RUNS} found"
+            )
+
+        # Select the newest complete session.
+        session, session_rows = max(
+            complete_sessions,
+            key=lambda item: item[0],
+        )
+
+        # Use the latest 5 formal measurements from that session.
+        latest_rows = session_rows[-REPORTED_RUNS:]
+
+        times = [row["time_ms"] for row in latest_rows]
 
         results.append(
             {
@@ -114,7 +172,6 @@ def main():
     )
 
     g1_file = RAW_DIR / "msm_g1.csv"
-
     g2_file = RAW_DIR / "msm_g2.csv"
 
     g1_rows = load_csv(g1_file)
@@ -149,7 +206,6 @@ def main():
         newline="",
         encoding="utf-8",
     ) as f:
-
         writer = csv.DictWriter(
             f,
             fieldnames=[
@@ -166,21 +222,25 @@ def main():
         writer.writeheader()
 
         for row in results:
-            writer.writerow(
-                {
-                    "group": row["group"],
-                    "threads": row["threads"],
-                    "N": row["N"],
-                    "runs": row["runs"],
-                    "median_ms": (f"{row['median_ms']:.3f}"),
-                    "min_ms": (f"{row['min_ms']:.3f}"),
-                    "max_ms": (f"{row['max_ms']:.3f}"),
-                }
-            )
+            writer.writerow(row)
 
     print(f"Summary written to: {RESULT_FILE}")
 
     print(f"Configurations: {len(results)}")
+
+    print()
+    print("=== MSM Summary ===")
+
+    for row in results:
+        print(
+            f"{row['group']:>2} "
+            f"{row['threads']:>2}T "
+            f"N={row['N']:>6} "
+            f"runs={row['runs']} "
+            f"median={row['median_ms']:.3f} ms "
+            f"min={row['min_ms']:.3f} ms "
+            f"max={row['max_ms']:.3f} ms"
+        )
 
 
 if __name__ == "__main__":

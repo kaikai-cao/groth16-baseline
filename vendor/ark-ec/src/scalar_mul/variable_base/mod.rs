@@ -434,7 +434,6 @@ fn msm_u64<V: VariableBaseMSM>(mut bases: &[V::MulBase], mut scalars: &[u64]) ->
 }
 
 // Compute msm using windowed non-adjacent form
-// Compute msm using windowed non-adjacent form
 fn msm_bigint_wnaf_parallel<V: VariableBaseMSM>(
     bases: &[V::MulBase],
     bigints: &[<V::ScalarField as PrimeField>::BigInt],
@@ -582,18 +581,6 @@ fn msm_bigint_wnaf_parallel<V: VariableBaseMSM>(
          bucket_count={}, bucket_work_ms={:.3}, \
          prefix_work_ms={:.3}, windows_wall_ms={:.3}",
             size, c, digits_count, bucket_count, bucket_work_ms, prefix_work_ms, windows_wall_ms
-        );
-    }
-
-    if std::env::var_os("MSM_TRACE").is_some() {
-        eprintln!(
-            "[WNAF-WINDOWS] size={}, window={}, digits_count={}, \
-             bucket_count={}, windows_ms={:.3}",
-            size,
-            c,
-            digits_count,
-            bucket_count,
-            windows_start.elapsed().as_secs_f64() * 1000.0
         );
     }
 
