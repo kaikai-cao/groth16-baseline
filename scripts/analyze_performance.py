@@ -321,9 +321,9 @@ def main():
     print(f"Figure: {speedup_path}")
     print()
     print(
-        "Note: window and microbenchmark analyses are intentionally not "
-        "run here because their raw datasets are not yet present in the "
-        "repository under their final experiment paths."
+        "Note: this script only regenerates the dedicated thread-scaling "
+        "outputs. MSM, FFT, group-operation, and WNAF-prefix analyses "
+        "are handled by their respective scripts."
     )
 
 
