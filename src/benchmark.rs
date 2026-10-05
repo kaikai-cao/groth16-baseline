@@ -4,7 +4,7 @@ use ark_bn254::Fr;
 use ark_serialize::CanonicalSerialize;
 use ark_std::test_rng;
 
-use crate::circuit::{generate_repeated_square_witness, RepeatedSquareCircuit};
+use crate::circuit::{RepeatedSquareCircuit, generate_repeated_square_witness};
 use crate::groth16::{prepare_vk, prove, setup, verify};
 
 pub struct BenchmarkResult {
@@ -37,8 +37,7 @@ pub fn run_once(num_constraints: usize) -> Result<BenchmarkResult, String> {
     // Setup
     let start = Instant::now();
 
-    let pk = setup(setup_circuit, &mut setup_rng)
-        .map_err(|e| format!("setup failed: {e:?}"))?;
+    let pk = setup(setup_circuit, &mut setup_rng).map_err(|e| format!("setup failed: {e:?}"))?;
 
     let setup_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -54,8 +53,7 @@ pub fn run_once(num_constraints: usize) -> Result<BenchmarkResult, String> {
 
     let x = Fr::from(2u64);
 
-    let (intermediate, output) =
-        generate_repeated_square_witness(x, num_constraints);
+    let (intermediate, output) = generate_repeated_square_witness(x, num_constraints);
 
     let witness_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -71,8 +69,8 @@ pub fn run_once(num_constraints: usize) -> Result<BenchmarkResult, String> {
     // Prove
     let start = Instant::now();
 
-    let proof = prove(prove_circuit, &pk, &mut prove_rng)
-        .map_err(|e| format!("prove failed: {e:?}"))?;
+    let proof =
+        prove(prove_circuit, &pk, &mut prove_rng).map_err(|e| format!("prove failed: {e:?}"))?;
 
     let prove_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -85,8 +83,8 @@ pub fn run_once(num_constraints: usize) -> Result<BenchmarkResult, String> {
 
     let start = Instant::now();
 
-    let verified = verify(&pvk, &proof, &public_inputs)
-        .map_err(|e| format!("verify failed: {e:?}"))?;
+    let verified =
+        verify(&pvk, &proof, &public_inputs).map_err(|e| format!("verify failed: {e:?}"))?;
 
     let verify_ms = start.elapsed().as_secs_f64() * 1000.0;
 
@@ -118,7 +116,6 @@ pub fn run_once(num_constraints: usize) -> Result<BenchmarkResult, String> {
     })
 }
 
-
 pub fn run_prove_only(
     num_constraints: usize,
     warmups: usize,
@@ -139,8 +136,7 @@ pub fn run_prove_only(
 
     let setup_start = Instant::now();
 
-    let pk = setup(setup_circuit, &mut setup_rng)
-        .map_err(|e| format!("setup failed: {e:?}"))?;
+    let pk = setup(setup_circuit, &mut setup_rng).map_err(|e| format!("setup failed: {e:?}"))?;
 
     let setup_ms = setup_start.elapsed().as_secs_f64() * 1000.0;
 
@@ -158,16 +154,13 @@ pub fn run_prove_only(
 
     let witness_start = Instant::now();
 
-    let (intermediate, output) =
-        generate_repeated_square_witness(x, num_constraints);
+    let (intermediate, output) = generate_repeated_square_witness(x, num_constraints);
 
     let witness_ms = witness_start.elapsed().as_secs_f64() * 1000.0;
 
     println!(
         "Setup: {:.3} ms | Prepare VK: {:.3} ms | Witness: {:.3} ms",
-        setup_ms,
-        prepare_vk_ms,
-        witness_ms
+        setup_ms, prepare_vk_ms, witness_ms
     );
 
     let mut prove_rng = test_rng();
@@ -210,20 +203,16 @@ pub fn run_prove_only(
 
         let prove_ms = prove_start.elapsed().as_secs_f64() * 1000.0;
 
-        let msm_timings =
-            ark_groth16::prover::take_last_msm_timings()
-                .ok_or_else(|| {
-                    "MSM timing data was not recorded".to_string()
-                })?;
+        let msm_timings = ark_groth16::prover::take_last_msm_timings()
+            .ok_or_else(|| "MSM timing data was not recorded".to_string())?;
 
         // Verification is outside the Prove timer.
         let verify_start = Instant::now();
 
-        let verified = verify(&pvk, &proof, &[output])
-            .map_err(|e| format!("verify failed: {e:?}"))?;
+        let verified =
+            verify(&pvk, &proof, &[output]).map_err(|e| format!("verify failed: {e:?}"))?;
 
-        let verify_ms =
-            verify_start.elapsed().as_secs_f64() * 1000.0;
+        let verify_ms = verify_start.elapsed().as_secs_f64() * 1000.0;
 
         if !verified {
             return Err("verification returned false".to_string());
@@ -233,9 +222,7 @@ pub fn run_prove_only(
 
         proof
             .serialize_compressed(&mut bytes)
-            .map_err(|e| {
-                format!("proof serialization failed: {e:?}")
-            })?;
+            .map_err(|e| format!("proof serialization failed: {e:?}"))?;
 
         results.push(BenchmarkResult {
             constraints: num_constraints,

@@ -2,17 +2,30 @@ from pathlib import Path
 import csv
 import statistics
 
+ROOT = Path(__file__).resolve().parents[1]
 
-RAW_DIR = Path("experiments/raw/microbench")
-RESULT_DIR = Path("results/tables")
+RAW_DIR = ROOT / "experiments" / "raw" / "microbench"
+RESULT_DIR = ROOT / "results" / "tables"
 RESULT_FILE = RESULT_DIR / "msm.csv"
 
 EXPECTED_RUNS = 5
 
 
 def load_csv(path: Path):
-    with path.open("r", newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+    if not path.exists():
+        raise FileNotFoundError(path)
+
+    with path.open(
+        "r",
+        newline="",
+        encoding="utf-8",
+    ) as f:
+        rows = list(csv.DictReader(f))
+
+    if not rows:
+        raise RuntimeError(f"No data found in {path}")
+
+    return rows
 
 
 def median(values):
@@ -21,81 +34,88 @@ def median(values):
 
 def process_group(rows, group_name):
     """
-    Convert raw runs into one median result per
+    Convert raw MSM measurements into one summary row per
     (group, threads, N).
 
-    Current raw-data convention:
-    - 'default' thread records are exploratory and excluded.
-    - For explicit thread settings, exactly 5 formal runs
-      are expected for each (group, threads, N).
+    Raw MSM microbenchmark format:
+
+        timestamp_ms,threads,group,N,time_ms
+
+    Each row is one measurement, so there is no run/session field.
+
+    Current processing rule:
+    - exclude exploratory 'default' thread measurements;
+    - group by explicit thread count and N;
+    - sort by timestamp;
+    - use the latest five measurements;
+    - report median/min/max.
     """
 
-    # Exclude exploratory runs whose thread value is "default".
-    rows = [
-        row for row in rows
-        if row["threads"].strip().lower() != "default"
-    ]
+    formal_rows = [row for row in rows if row["threads"].strip().lower() != "default"]
 
-    groups = {}
+    configurations = {}
 
-    for row in rows:
-        threads = row["threads"].strip()
+    for row in formal_rows:
+        threads = int(row["threads"].strip())
+
         n = int(row["N"])
 
-        key = (group_name, int(threads), n)
-
-        groups.setdefault(key, []).append(
-            float(row["time_ms"])
+        key = (
+            threads,
+            n,
         )
+
+        configurations.setdefault(
+            key,
+            [],
+        ).append(row)
 
     results = []
 
-    for (group, threads, n), times in sorted(groups.items()):
-        if len(times) < EXPECTED_RUNS:
+    for (threads, n), config_rows in sorted(configurations.items()):
+        config_rows = sorted(
+            config_rows,
+            key=lambda row: int(row["timestamp_ms"]),
+        )
+
+        if len(config_rows) < EXPECTED_RUNS:
             raise RuntimeError(
-                f"{group}, threads={threads}, N={n}: "
-                f"only {len(times)} formal runs found; "
-                f"expected {EXPECTED_RUNS}"
+                f"{group_name}, threads={threads}, N={n}: "
+                f"only {len(config_rows)} measurements found; "
+                f"expected at least {EXPECTED_RUNS}"
             )
 
-        # Use the five formal measurements.
-        #
-        # For the current experiment every configuration
-        # has exactly five formal runs.
-        if len(times) > EXPECTED_RUNS:
-            print(
-                f"Warning: {group}, threads={threads}, N={n} "
-                f"has {len(times)} runs; using the last "
-                f"{EXPECTED_RUNS} runs."
-            )
-            times = times[-EXPECTED_RUNS:]
+        # Use the newest five measurements.
+        latest_rows = config_rows[-EXPECTED_RUNS:]
+
+        times = [float(row["time_ms"]) for row in latest_rows]
 
         times_sorted = sorted(times)
 
-        results.append({
-            "group": group,
-            "threads": threads,
-            "N": n,
-            "runs": len(times_sorted),
-            "median_ms": median(times_sorted),
-            "min_ms": min(times_sorted),
-            "max_ms": max(times_sorted),
-        })
+        results.append(
+            {
+                "group": group_name,
+                "threads": str(threads),
+                "N": n,
+                "runs": len(times),
+                "median_ms": median(times),
+                "min_ms": min(times),
+                "max_ms": max(times),
+            }
+        )
 
     return results
 
 
 def main():
-    RESULT_DIR.mkdir(parents=True, exist_ok=True)
+    RESULT_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     g1_file = RAW_DIR / "msm_g1.csv"
+
     g2_file = RAW_DIR / "msm_g2.csv"
-
-    if not g1_file.exists():
-        raise FileNotFoundError(g1_file)
-
-    if not g2_file.exists():
-        raise FileNotFoundError(g2_file)
 
     g1_rows = load_csv(g1_file)
     g2_rows = load_csv(g2_file)
@@ -103,26 +123,33 @@ def main():
     results = []
 
     results.extend(
-        process_group(g1_rows, "G1")
+        process_group(
+            g1_rows,
+            "G1",
+        )
     )
 
     results.extend(
-        process_group(g2_rows, "G2")
+        process_group(
+            g2_rows,
+            "G2",
+        )
     )
 
     results.sort(
-        key=lambda r: (
-            r["group"],
-            int(r["threads"]),
-            r["N"],
+        key=lambda row: (
+            row["group"],
+            int(row["threads"]),
+            row["N"],
         )
     )
 
     with RESULT_FILE.open(
         "w",
         newline="",
-        encoding="utf-8"
+        encoding="utf-8",
     ) as f:
+
         writer = csv.DictWriter(
             f,
             fieldnames=[
@@ -139,17 +166,20 @@ def main():
         writer.writeheader()
 
         for row in results:
-            writer.writerow({
-                "group": row["group"],
-                "threads": row["threads"],
-                "N": row["N"],
-                "runs": row["runs"],
-                "median_ms": f"{row['median_ms']:.3f}",
-                "min_ms": f"{row['min_ms']:.3f}",
-                "max_ms": f"{row['max_ms']:.3f}",
-            })
+            writer.writerow(
+                {
+                    "group": row["group"],
+                    "threads": row["threads"],
+                    "N": row["N"],
+                    "runs": row["runs"],
+                    "median_ms": (f"{row['median_ms']:.3f}"),
+                    "min_ms": (f"{row['min_ms']:.3f}"),
+                    "max_ms": (f"{row['max_ms']:.3f}"),
+                }
+            )
 
     print(f"Summary written to: {RESULT_FILE}")
+
     print(f"Configurations: {len(results)}")
 
 

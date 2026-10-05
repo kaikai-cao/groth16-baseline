@@ -2,6 +2,7 @@
 name = "groth16-baseline"
 version = "0.1.0"
 edition = "2024"
+default-run = "groth16-baseline"
 
 [dependencies]
 ark-bn254 = "0.6.0"
@@ -16,4 +17,3 @@ ark-poly = "0.6.0"
 [patch.crates-io]
 ark-groth16 = { path = "vendor/ark-groth16" }
 ark-ec = { path = "vendor/ark-ec" }
-
