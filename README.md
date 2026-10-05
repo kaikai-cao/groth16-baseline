@@ -757,11 +757,15 @@ groth16-baseline/
 │       │   └── memory_n1000000.csv
 │       │
 │       ├── baseline/
-│       │   ├── baseline_n1000.csv
-│       │   ├── baseline_n10000.csv
-│       │   ├── baseline_n100000.csv
 │       │   ├── baseline_n1000000.csv
-│       │   └── peak_memory.csv
+|       |   ├── baseline_n1000000.err
+|       |   ├── memory_n1000.csv
+|       |   ├── memory_n1000.err
+|       |   ├── memory_n10000.csv
+|       |   ├── memory_n10000.err
+|       |   ├── memory_n100000.csv
+|       |   ├── memory_n100000.err
+|       |   └── peak_memory.csv
 │       │
 │       ├── microbench/
 │       │   ├── fft.csv
@@ -819,15 +823,23 @@ groth16-baseline/
 │       ├── msm_speedup.csv
 │       ├── prefix_microbench.csv
 │       ├── prover_scaling.csv
-│       └── prover_stage_share.csv
+│       |── prover_stage_share.csv
+|       ├── prover_summary.csv
+|       ├── prover_summary.md
+|       ├── thread_scaling.csv
+|       └── thread_scaling_selected_runs.csv
 │
 ├── scripts/
-│   ├── analyze_fft.py
-│   ├── analyze_microbench.py
-│   ├── analyze_msm.py
-│   ├── plot_msm.py
-│   ├── plot_prover_profile.py
-│   └── summarize_msm.py
+│      ├── analyze_fft.py
+│      ├── analyze_microbench.py
+│      ├── analyze_msm.py
+│      ├── analyze_performance.py
+│      ├── plot_baseline.py
+│      ├── plot_msm.py
+│      ├── plot_msm_speedup.py
+│      ├── plot_prover_profile.py
+│      ├── requirements.txt
+│      └── summarize_msm.py
 │
 ├── src/
 │   ├── bin/
@@ -956,6 +968,16 @@ experiments/raw/microbench/fft.csv
 ```
 
 ---
+
+
+### Python Dependencies
+
+Before running the analysis and plotting scripts, install the required Python packages:
+
+```powershell
+python -m pip install -r scripts/requirements.txt
+```
+
 
 # Reproducing the MSM Microbenchmarks
 

@@ -67,7 +67,7 @@ fn run_benchmark(num_constraints: usize, warmups: usize, runs: usize) {
     if !file_exists_and_nonempty {
         writeln!(
             file,
-            "N,threads,run,setup_ms,witness_ms,prepare_vk_ms,\
+            "N,threads,run,setup_ms,witness_ms,prepare_vk_ms,prove_ms,\
 verify_ms,proof_bytes,msm_c_h_ms,msm_c_l_ms,msm_a_ms,msm_b_g1_ms,\
 msm_b_g2_ms,msm_total_ms"
         )
